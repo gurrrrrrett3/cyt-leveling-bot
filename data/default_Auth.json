@@ -1,0 +1,13 @@
+{
+    "INSTRUCTIONS": "Add your values, then rename this file to 'auth.json'",
+
+    "discord": {
+        "token": "BOT_TOKEN",
+        "prefix": "!"
+    },
+    "database": {
+        "host": "192.168.0.1",
+        "user": "bot",
+        "password": "BOT_PASSWORD"
+    }
+}

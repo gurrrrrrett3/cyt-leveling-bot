@@ -8,8 +8,8 @@ Requires node.js and npm
 
 **Installing:**
 
-Read `default_auth.json`
+1. Read `default_auth.json`
 
-run `npm run build` to install and build dependencies
+2. Run `npm run build` to install and build dependencies
 
-run `npm start` to start the bot
+3. Run `npm start` to start the bot

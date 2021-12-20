@@ -10,6 +10,4 @@ Requires node.js and npm
 
 1. Read `default_auth.json`
 
-2. Run `npm run build` to install and build dependencies
-
-3. Run `npm start` to start the bot
+2. Run `npm run start` to start the bot

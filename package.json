@@ -1,23 +1,28 @@
 {
-  "name": "cyt-leveling-bot",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/gurrrrrrett3/cyt-leveling-bot.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/gurrrrrrett3/cyt-leveling-bot/issues"
-  },
-  "homepage": "https://github.com/gurrrrrrett3/cyt-leveling-bot#readme",
-  "dependencies": {
-    "discord.js": "^13.3.1"
-  }
+    "name": "cyt-leveling-bot",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "npm run build && echo \"Running\" && node index.js",
+        "build": "npm run depends && echo \"Compiling\" && tsc",
+        "depends": "echo \"Installing dependencies\" && npm i",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/gurrrrrrett3/cyt-leveling-bot.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/gurrrrrrett3/cyt-leveling-bot/issues"
+    },
+    "homepage": "https://github.com/gurrrrrrett3/cyt-leveling-bot#readme",
+    "dependencies": {
+        "discord.js": "^13.3.1",
+        "mariadb": "^2.5.5",
+        "typescript": "^4.5.4"
+    }
 }

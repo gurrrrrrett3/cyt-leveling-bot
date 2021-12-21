@@ -1,3 +1,5 @@
+import { LocalDatabaseUser } from "./types";
+
 export default class User {
   public id: string;
   public level: number;
@@ -16,7 +18,7 @@ export default class User {
   public processMessage() {
     //only give xp if the last message was more than a minute ago
 
-    if (Date.now() - this.last > 60000) {
+    if (Date.now() - this.last > 0) {
       let xpToGive = this.genXP();
       this.xp += xpToGive;
       this.total += xpToGive;
@@ -27,7 +29,13 @@ export default class User {
   }
 
   public export() {
-    return [this.level, this.xp, this.total, this.last, this.id];
+    return {
+      ID: this.id,
+      LEVEL: this.level,
+      XP: this.xp,
+      TOTAL: this.total,
+      LAST: this.last,
+    } as LocalDatabaseUser
   }
 
   public genXPNeeded(level?: number) {

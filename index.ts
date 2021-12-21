@@ -13,8 +13,6 @@ const db = new Database({
 
 db.Connect().then(async () => {
 
-    console.log(await db.getUser("232510731067588608"))
-
   //Log in to discord
 
   console.log("Database connection initialized, logging in to discord");
@@ -32,13 +30,13 @@ db.Connect().then(async () => {
 
   Client.login(auth.discord.token);
 
-  Client.once("ready", () => {
+  Client.once("ready", async() => {
     console.log(`Logged in as ${Client.user?.tag}`);
 
     Client.user?.setActivity("on CYT | craftyour.town | !help", { type: "PLAYING" });
 
     //Initialize the bot
 
-    const bot = new Bot(Client, db);
+    new Bot(Client, db);
   });
 });

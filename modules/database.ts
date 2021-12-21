@@ -1,6 +1,9 @@
 import mariadb from "mariadb";
 import fs from "fs";
 import { DatabaseUser, LocalDatabase, LocalDatabaseUser } from "./types";
+import Util from "./util";
+import auth from "../data/auth.json";
+import User from "./user";
 
 const localDataFile = "./data/localdb.json";
 
@@ -8,6 +11,9 @@ export default class Database {
   private pool: mariadb.Pool;
   //@ts-ignore
   private conn: mariadb.PoolConnection;
+  private nextUpdate: number = Date.now() + Util.minutesToMilliseconds(auth.db_data.db_update_interval_minutes);
+  private lastUpdate = Date.now();
+  private databaseQueryCount = 0;
 
   constructor(Data: { host: string; user: string; password: string }) {
     this.pool = mariadb.createPool({
@@ -28,26 +34,27 @@ export default class Database {
       .then((conn) => {
         this.conn = conn;
         this.conn
-          .query("use USERS")
+          .query(`use ${auth.db_data.database}`)
           .then((rows) => {
-            console.log("Using database USERS");
+            console.log(`Using database ${auth.db_data.database}`);
           })
           .catch((err) => {
-            console.log("USERS database not found, creating it");
-            this.conn.query("create database USERS").then((rows) => {
-              console.log("Created database USERS");
+            console.log(`${auth.db_data.database} database not found, creating it`);
+            this.conn.query(`create database ${auth.db_data.database}`).then((rows) => {
+              console.log(`Created database ${auth.db_data.database}`);
             });
           })
           .then(() => {
+            this.databaseQueryCount++;
             this.conn
               .query(
-                "create table USERS_TABLE (ID CHAR(18) not null primary key, LEVEL int not null, XP int not null, TOTAL int not null, LAST bigint not null)"
+                `create table ${auth.db_data.table} (ID CHAR(18) not null primary key, LEVEL int not null, XP int not null, TOTAL int not null, LAST bigint not null)`
               )
               .then((rows) => {
                 console.log(rows);
               })
               .catch((err) => {
-                console.log("USERS_TABLE exists, not creating it");
+                console.log(`${auth.db_data.table} exists, not creating it`);
               });
 
             //add the local data to the database in case of a crash
@@ -56,13 +63,11 @@ export default class Database {
             if (data.insert.length > 0) {
               this.massInsert(data.insert);
               data.insert = [];
-              console.log("Inserted local data into database");
             }
 
             if (data.update.length > 0) {
               this.massUpdate(data.update);
               data.update = [];
-              console.log("Updated local data into database");
             }
 
             this.saveLocalDB(data);
@@ -70,6 +75,14 @@ export default class Database {
             return;
           });
       });
+
+    //start update check interval
+    setInterval(() => {
+      if (this.nextUpdate <= Date.now()) {
+        this.pushLocalData();
+        this.databaseQueryCount = 0;
+      }
+    }, 60000);
   }
 
   public async getUser(ID: string) {
@@ -82,7 +95,7 @@ export default class Database {
 
       if (dbUser) {
         this.addUserToUpdate(dbUser);
-        user = dbUser
+        user = dbUser;
       } else {
         //if the user is not in the database, create it
         console.log(`Could not find user ${ID} in either database, creating it`);
@@ -94,6 +107,74 @@ export default class Database {
     return user;
   }
 
+  public saveUser(user: User) {
+    let data = this.getLocalDB();
+
+    let localUser = data.users.find((u: LocalDatabaseUser) => u.ID === user.id);
+
+    if (!localUser) {
+      data.users.push(user.export());
+    } else {
+      data.users[data.users.indexOf(localUser)] = user.export();
+    }
+
+    let localUpdateUser = data.update.find((u: LocalDatabaseUser) => u.ID === user.id);
+
+    if (!localUpdateUser) {
+      data.update.push(user.export());
+    } else {
+      data.update[data.update.indexOf(localUpdateUser)] = user.export();
+    }
+
+    this.saveLocalDB(data);
+  }
+
+  public async getTop(amount: number) {
+    let rows: any[] = await this.conn.query(`select * from ${auth.db_data.table} order by TOTAL desc limit ?`, [
+      amount,
+    ]);
+    this.databaseQueryCount++;
+    let users: LocalDatabaseUser[] = [];
+
+    rows.forEach((row: any, index: number) => {
+      if (index < amount) {
+        users.push(row);
+      }
+    });
+
+    users.forEach((user: LocalDatabaseUser) => {
+
+        const newUser = new User(user)
+
+        this.saveUser(newUser);
+
+    })
+
+    //sort local users by total
+    const data = this.getLocalDB();
+    
+    data.users.sort((a: LocalDatabaseUser, b: LocalDatabaseUser) => {
+
+        return b.TOTAL - a.TOTAL;
+
+        })
+
+        //return the first amount of users
+
+    return data.users.slice(0, amount);
+  }
+
+  public getDatabaseStats() {
+    return {
+      databaseQueryCount: this.databaseQueryCount,
+      lastUpdate: Math.round(this.lastUpdate / 1000),
+      nextUpdate: Math.round(this.nextUpdate / 1000),
+      localUsers: this.getLocalDB().users.length,
+      localInsert: this.getLocalDB().insert.length,
+      localUpdate: this.getLocalDB().update.length,
+    };
+  }
+
   private getUserFromLocalDB(ID: string) {
     let data = this.getLocalDB();
 
@@ -103,9 +184,10 @@ export default class Database {
   }
 
   private async getUserfromDatabase(ID: string) {
-    const rows = await this.conn.query("SELECT * FROM USERS_TABLE WHERE ID = ?", ID);
+    const rows = await this.conn.query(`SELECT * FROM ${auth.db_data.table} WHERE ID = ?`, ID);
+    this.databaseQueryCount++;
     return rows[0];
-    }
+  }
 
   private convertToDatabaseUser(user: LocalDatabaseUser): DatabaseUser {
     return [user.ID, user.LEVEL, user.XP, user.TOTAL, user.LAST];
@@ -113,16 +195,6 @@ export default class Database {
 
   private convertToDatabaseUserUpdate(user: LocalDatabaseUser) {
     return [user.LEVEL, user.XP, user.TOTAL, user.LAST, user.ID];
-  }
-
-  private convertToLocalDatabaseUser(user: DatabaseUser): LocalDatabaseUser {
-    return {
-      ID: user[0],
-      LEVEL: user[1],
-      XP: user[2],
-      TOTAL: user[3],
-      LAST: user[4],
-    };
   }
 
   private newUser(ID: string) {
@@ -183,8 +255,9 @@ export default class Database {
       newData.push(this.convertToDatabaseUser(user));
     });
 
+    this.databaseQueryCount++;
     this.conn
-      .batch("insert into USERS_TABLE (ID, LEVEL, XP, TOTAL, LAST) values (?, ?, ?, ?, ?)", newData)
+      .batch(`insert into ${auth.db_data.table} (ID, LEVEL, XP, TOTAL, LAST) values (?, ?, ?, ?, ?)`, newData)
       .catch((err) => {
         console.log("Error inserting users into database");
         console.error(err);
@@ -198,11 +271,34 @@ export default class Database {
       newData.push(this.convertToDatabaseUserUpdate(user));
     });
 
+    this.databaseQueryCount++;
     this.conn
-      .batch("update USERS_TABLE set LEVEL = ?, XP = ?, TOTAL = ? , LAST = ? where ID = ?", newData)
+      .batch(`update ${auth.db_data.table} set LEVEL = ?, XP = ?, TOTAL = ? , LAST = ? where ID = ?`, newData)
       .catch((err) => {
         console.log("Error updating database");
         console.error(err);
       });
+  }
+
+  private async pushLocalData() {
+    const data = this.getLocalDB();
+
+    if (data.insert.length > 0) {
+      this.massInsert(data.insert);
+      data.insert = [];
+    }
+
+    if (data.update.length > 0) {
+      this.massUpdate(data.update);
+      data.update = [];
+    }
+
+    this.saveLocalDB(data);
+
+    this.setUpdateTime();
+  }
+
+  private setUpdateTime() {
+    this.nextUpdate = Date.now() + Util.minutesToMilliseconds(auth.db_data.db_update_interval_minutes);
   }
 }

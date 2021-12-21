@@ -1,15 +1,14 @@
 import Discord from "discord.js";
-import mariadb from "mariadb";
 import auth from "../data/auth.json";
-import fs from "fs";
-import { Command, CommandData } from "./types";
+import { Command } from "./types";
 import Database from "./database";
+import Util from "./util";
+import { Commands } from "./commands";
 
 export default class CommandHandler {
   public Client: Discord.Client;
   public db: Database;
   private prefix: string;
-  private commands: Command[] = [];
 
   constructor(client: Discord.Client, db: Database) {
     this.Client = client;
@@ -28,10 +27,20 @@ export default class CommandHandler {
     const commandString = args[0].slice(this.prefix.length).toLowerCase();
     const command = this.getCommand(commandString);
     args.shift();
+
+    if (command) {
+      try {
+        await command.run(this.Client, message, this.db);
+      } catch (e) {
+        console.error(e);
+      }
+    } else {
+      message.reply({embeds: [Util.genEmbed("Error", "Command not found", 0xFF0000)]});
+    }
   }
 
     public getCommand(name: string): Command | undefined {
-        return this.commands.find((command) => command.getCommandData().name === name);
+      return Object.values(Commands).find((cmd) => cmd.name === name || cmd.aliases.includes(name));
     }
 
 }

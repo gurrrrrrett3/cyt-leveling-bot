@@ -25,6 +25,22 @@ export default class Bot {
       // no dms
       if (message.channel.type === "DM") return;
 
+      this.commandHandler.handle(message);
+
+      const dbUser = await this.db.getUser(message.author.id);
+
+      if (!dbUser) {
+        console.error(`User ${message.author.id} not found in database`);
+        //shouldn't happen ever, but just in case
+        return;
+      }
+
+      const user = new User(dbUser);
+
+      user.processMessage()
+      
+      db.saveUser(user);
+
     });
   }
 }

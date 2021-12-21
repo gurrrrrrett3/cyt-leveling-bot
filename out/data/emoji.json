@@ -1,0 +1,6 @@
+{
+    "progressbar": {
+        "empty": "⬛",
+        "full": "🟦"
+    }
+}

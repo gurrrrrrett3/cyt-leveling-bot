@@ -76,6 +76,5 @@ typings/
 .fusebox/
 
 *.js
+out/
 data/auth.json
-./out/data/auth.json
-

@@ -18,7 +18,7 @@ export default class User {
   public processMessage() {
     //only give xp if the last message was more than a minute ago
 
-    if (Date.now() - this.last > 0) {
+    if (Date.now() - this.last > 60000) {
       let xpToGive = this.genXP();
       this.xp += xpToGive;
       this.total += xpToGive;

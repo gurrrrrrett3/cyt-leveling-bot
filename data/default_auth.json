@@ -6,12 +6,11 @@
         "prefix": "!"
     },
     "database": {
-        "host": "192.168.0.1",
+        "host": "10.1.1.2",
+        "port": 3306,
         "user": "bot",
-        "password": "BOT_PASSWORD"
-    },
-    "db_data": {
-        "database": "USERS",
+        "password": "password",
+        "name": "USERS",
         "table": "USERS_TABLE",
         "db_update_interval_minutes": 30
     }

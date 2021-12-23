@@ -7,6 +7,7 @@ import Database from "./modules/database";
 
 const db = new Database({
   host: auth.database.host,
+  port: auth.database.port,
   user: auth.database.user,
   password: auth.database.password,
 });

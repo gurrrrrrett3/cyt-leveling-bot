@@ -302,5 +302,6 @@ export default class Database {
 
   private setUpdateTime() {
     this.nextUpdate = Date.now() + Util.minutesToMilliseconds(auth.database.db_update_interval_minutes);
+    this.lastUpdate = Date.now();
   }
 }

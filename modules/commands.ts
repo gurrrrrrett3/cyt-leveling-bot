@@ -1,9 +1,10 @@
-import Discord from "discord.js";
+import Discord, { MessageButton } from "discord.js";
 import Util from "./util";
 
 import { discord } from "../data/auth.json";
 import Database from "./database";
 import User from "./user";
+import Api from "./api";
 
 export const Commands = {
   help: {
@@ -117,6 +118,28 @@ export const Commands = {
       );
 
       message.reply({ embeds: [embed] });
+    },
+  },
+
+  cat: {
+    name: "cat",
+    description: "Gets a random cat",
+    usage: "cat",
+    category: "Fun",
+    aliases: ["kitty", "kitten"],
+    run: async (Client: Discord.Client, message: Discord.Message, db: Database) => {
+      const embed = new Discord.MessageEmbed()
+        .setTitle("Random Cat")
+        .setImage(await Api.getRandomCat())
+        .setColor(0x00ff00)
+        .setFooter("Powered by thecatapi.com")
+        .setTimestamp();
+
+      const row = new Discord.MessageActionRow().addComponents(
+        new MessageButton().setCustomId("anotherCat").setLabel("Another!").setStyle("SUCCESS")
+      );
+
+      message.reply({ embeds: [embed], components: [row] });
     },
   },
 };

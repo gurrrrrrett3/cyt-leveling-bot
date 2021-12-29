@@ -42,5 +42,31 @@ export default class Bot {
       db.saveUser(user);
 
     });
+
+    this.Client.on("interactionCreate", async (interaction: Discord.Interaction) => {
+
+      if (interaction.isButton()) {
+
+        let id = interaction.customId
+
+        switch (id) {
+        
+          case "anotherCat": {
+
+           const command = this.commandHandler.getCommand("cat")
+
+           if (command) {
+             let message = interaction.channel?.lastMessage
+             if (!message) return
+              command.run(this.Client, message, this.db)
+           }
+
+          }
+
+        }
+
+      }
+
+    })
   }
 }

@@ -5,6 +5,7 @@ import { discord } from "../data/auth.json";
 import Database from "./database";
 import User from "./user";
 import Api from "./api";
+import React from "./react";
 
 export const Commands = {
   help: {
@@ -85,13 +86,14 @@ export const Commands = {
 
       let fields: { name: string; value: string; inline: boolean }[] = [];
 
-      for (const user of users) {
+      for (let i = 0; i < users.length; i++) {
+        let user = users[i];
         const total = user.TOTAL;
         const level = user.LEVEL;
         const username = await Client.users.fetch(user.ID).then((u) => u.username);
 
         fields.push({
-          name: `${username}`,
+          name: `${i + 1} ${username}`,
           value: `**Level:** \`${level}\`\n**XP:** \`${total}\``,
           inline: true,
         });
@@ -99,6 +101,34 @@ export const Commands = {
 
       let embed = Util.genEmbed("Leaderboard", `Top 10 users for ${message.guild?.name}`, 0x00ff00, fields);
       message.reply({ embeds: [embed] });
+    },
+  },
+
+  react: {
+    name: "react",
+    description: "Creates a reaction challenge",
+    usage: "!react",
+    category: "Levels",
+    aliases: ["r"],
+    run: async (Client: Discord.Client, message: Discord.Message, db: Database) => {
+
+      const embed = Util.genEmbed(
+        "Get Ready...",
+        "Please Wait..."
+      );
+
+      message.reply({ embeds: [embed] });
+
+      setTimeout(async () => {
+
+        let r = new React(message);
+        let g = await r.generate();
+        let e = g.embed;
+        let b = g.row;
+
+        message.reply({ embeds: [e], components: [b] });
+
+      }, Util.randomInt(3000, 10000));
     },
   },
 
@@ -141,5 +171,28 @@ export const Commands = {
 
       message.reply({ embeds: [embed], components: [row] });
     },
+  },
+
+  corgi: {
+    name: "corgi",
+    description: "Gets a random corgi",
+    usage: "corgi",
+    category: "Fun",
+    aliases: ["corgy"],
+    run: async (Client: Discord.Client, message: Discord.Message, db: Database) => {
+
+      const embed = new Discord.MessageEmbed()
+        .setTitle("Random Corgi")
+        .setImage(await Api.getRandomCorgi())
+        .setColor(0x00ff00)
+        .setFooter("Powered by dog.ceo")
+        .setTimestamp();
+        
+      const row = new Discord.MessageActionRow().addComponents(
+        new MessageButton().setCustomId("anotherCorgi").setLabel("Another!").setStyle("SUCCESS")
+      );
+
+      message.reply({ embeds: [embed], components: [row] });
+    }
   },
 };

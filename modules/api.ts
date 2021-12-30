@@ -8,4 +8,13 @@ export default class Api {
       return json[0].url;
     });
   }
+
+  public static async getRandomCorgi() {
+
+    let json = fetch(auth.api.corgi.url).then((res) => res.json());
+    return json.then((json) => {
+      return json.message;
+    });
+
+  }
 }

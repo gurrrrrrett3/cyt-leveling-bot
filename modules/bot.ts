@@ -4,6 +4,7 @@ import auth from "../data/auth.json";
 import emoji from "../data/emoji.json";
 import User from "./user";
 import CommandHandler from "./commandHandler";
+import InteractionHandler from "./interactionHandler";
 import Database from "./database";
 
 export default class Bot {
@@ -11,12 +12,14 @@ export default class Bot {
   public db: Database;
   public prefix: string;
   public commandHandler: CommandHandler;
+  public interactionHandler: InteractionHandler;
 
   constructor(client: Discord.Client, db: Database) {
     this.Client = client;
     this.db = db;
     this.prefix = auth.discord.prefix;
     this.commandHandler = new CommandHandler(this.Client, this.db);
+    this.interactionHandler = new InteractionHandler(this.Client, this.db, this.commandHandler);
 
     this.Client.on("messageCreate", async (message: Discord.Message) => {
       // no bots
@@ -37,36 +40,13 @@ export default class Bot {
 
       const user = new User(dbUser);
 
-      user.processMessage()
-      
-      db.saveUser(user);
+      user.processMessage();
 
+      db.saveUser(user);
     });
 
     this.Client.on("interactionCreate", async (interaction: Discord.Interaction) => {
-
-      if (interaction.isButton()) {
-
-        let id = interaction.customId
-
-        switch (id) {
-        
-          case "anotherCat": {
-
-           const command = this.commandHandler.getCommand("cat")
-
-           if (command) {
-             let message = interaction.channel?.lastMessage
-             if (!message) return
-              command.run(this.Client, message, this.db)
-           }
-
-          }
-
-        }
-
-      }
-
-    })
+      this.interactionHandler.handle(interaction);
+    });
   }
 }

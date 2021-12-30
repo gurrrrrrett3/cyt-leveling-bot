@@ -1,4 +1,5 @@
-import { Client, Message } from "discord.js";
+import Discord, { Client, Message } from "discord.js";
+import CommandHandler from "./commandHandler";
 import Database from "./database";
 
 export type Command = {
@@ -8,6 +9,16 @@ export type Command = {
   category: string;
   aliases: string[];
   run(Client: Client, message: Message, db: Database): Promise<void>;
+};
+
+export type Interaction = {
+  name: string;
+  run(Client: Client, interaction: Discord.Interaction, db: Database, commandHandler: CommandHandler): Promise<void>
+};
+
+export type Letter ={
+  letter: string;
+  emoji: string;
 };
 
 export type DatabaseUser = [string, number, number, number, number];

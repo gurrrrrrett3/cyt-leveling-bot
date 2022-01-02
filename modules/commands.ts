@@ -27,7 +27,11 @@ export const Commands = {
           `**${discord.prefix}ping** - Pong!\n` +
           `**${discord.prefix}level** - Shows your level and XP\n` +
           `**${discord.prefix}level <user>** - Shows the level of a user\n` +
-          `**${discord.prefix}leaderboard** - Shows the top 10 users\n`
+          `**${discord.prefix}leaderboard** - Shows the top 10 users\n` +
+          `**${discord.prefix}react** - gives you a react challenge to get xp\n` +
+          `**${discord.prefix}reactlb - shows the top 10 react users\n` +
+          `**${discord.prefix}reactuser - shows your react stats\n` +
+          `**${discord.prefix}reactuser <user> - shows someone else's react stats react stats\n`
       );
 
       message.reply({ embeds: [embed] });
@@ -55,7 +59,7 @@ export const Commands = {
     description: "Shows your level and XP",
     usage: "level",
     category: "Levels",
-    aliases: ["lvl", "xp", "exp", "p", "profile"],
+    aliases: ["lvl", "xp", "exp", "p", "profile", "rank"],
     run: async (Client: Discord.Client, message: Discord.Message, db: Database) => {
       let user = message.mentions.users.first() ?? message.author;
       let userDB = await db.getUser(user.id);
@@ -151,7 +155,7 @@ export const Commands = {
     description: "Shows the top 10 users who reacted",
     usage: "!rlb, !rlb <user>",
     category: "Levels",
-    aliases: ["rl"],
+    aliases: ["rl", "reactlb", "reactleaderboard"],
     run: async (Client: Discord.Client, message: Discord.Message, db: Database) => {
       let users = await reactDatabase.getTopUsers(10);
 
@@ -186,7 +190,7 @@ export const Commands = {
     description: "Shows info on a single react user",
     usage: "!reactuser, !reactuser <user>",
     category: "Levels",
-    aliases: ["ru"],
+    aliases: ["ru", "reactu"],
     run: async (Client: Discord.Client, message: Discord.Message, db: Database) => {
       let user = message.mentions.users.first() ?? message.author;
       let userData = reactDatabase.getUser(user.id);

@@ -9,6 +9,7 @@ import React from "./react";
 import auth from "../data/auth.json";
 import lang from "../data/lang.json";
 import reactDB from "./reactdb";
+import packageJson from "../package.json";
 
 let reactDatabase = new reactDB(auth.react.file);
 
@@ -33,6 +34,56 @@ export const Commands = {
           `**${discord.prefix}reactuser** - shows your react stats\n` +
           `**${discord.prefix}reactuser <user>** - shows someone else's react stats react stats\n`
       );
+
+      message.reply({ embeds: [embed] });
+    },
+  },
+  credits: {
+    name: "credits",
+    description: "Information about development on the bot",
+    usage: "credits",
+    category: "General",
+    aliases: ["info", "dev"],
+    run: async (Client: Discord.Client, message: Discord.Message, db: Database) => {
+      let packages: string[] = [];
+
+      Object.keys(packageJson.dependencies).forEach((key) => {
+        //@ts-ignore
+        packages.push(`${key} - ${packageJson.dependencies[key]}`);
+      });
+
+      let feilds: Discord.EmbedFieldData[] = [];
+
+      feilds.push({
+        name: "Author",
+        value: "Gucci_Garrett#9211",
+        inline: true,
+      });
+
+      feilds.push({
+        name: "Version",
+        value: packageJson.version,
+        inline: true,
+      });
+
+      feilds.push({
+        name: "Github",
+        value: packageJson.repository.url.replace("git+", "").replace(".git", ""),
+        inline: false,
+      });
+
+      feilds.push({
+        name: "Dependencies",
+        value: packages.join("\n"),
+        inline: false,
+      });
+
+      feilds.push({
+        name: "Any bugs?",
+        value: `Report them here: ${packageJson.bugs.url}`
+      });
+
+      const embed = Util.genEmbed("Credits", "", 0x00ff00, feilds);
 
       message.reply({ embeds: [embed] });
     },

@@ -1,9 +1,7 @@
 import Discord from "discord.js";
-import mariadb from "mariadb";
-
 import auth from "./data/auth.json";
-import Api from "./modules/api";
 import Bot from "./modules/bot";
+import checkForDbs from "./modules/checkForDbs";
 import Database from "./modules/database";
 
 const db = new Database({
@@ -13,6 +11,10 @@ const db = new Database({
   password: auth.database.password,
 });
 
+//check if db files exist and create them if they don't
+checkForDbs()
+
+//connect to database
 db.Connect().then(async () => {
 
   //Log in to discord

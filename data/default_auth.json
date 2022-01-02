@@ -2,17 +2,38 @@
     "INSTRUCTIONS": "Add your values, then rename this file to 'auth.json'",
 
     "discord": {
-        "token": "BOT_TOKEN",
+        "token": "BOT TOKEN",
         "prefix": "!"
     },
     "database": {
         "host": "10.1.1.2",
         "port": 3306,
         "user": "bot",
-        "password": "password",
+        "password": "",
         "name": "USERS",
         "table": "USERS_TABLE",
         "db_update_interval_minutes": 30
+    },
+    "react": {
+        "file": "./data/reactdb.json",
+        "max_react_time": 5e3,
+        "ms_per_xp": 100,
+        "react_button_count": 3,
+        "react_min_delay": 2e3,
+        "react_max_delay": 5e3,
+        "react_cooldown_time": 9e5
+    },
+    "api": {
+        "cat": {
+            "url": "https://api.thecatapi.com/v1/images/search",
+            "key": "6f0dafb4-7357-489c-9e7c-09fa30e625de"
+        },
+        "dog": {
+            "url": "https://dog.ceo/api/breeds/image/random"
+        },
+        "corgi": {
+            "url": "https://dog.ceo/api/breed/corgi/cardigan/images/random"
+        }
     }
 
 }

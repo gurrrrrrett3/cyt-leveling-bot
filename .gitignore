@@ -78,3 +78,5 @@ typings/
 *.js
 out/
 data/auth.json
+data/localdb.json
+data/reactdb.json

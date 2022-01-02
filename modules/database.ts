@@ -87,7 +87,7 @@ export default class Database {
     }, 60000);
   }
 
-  public async getUser(ID: string) {
+  public async getUser(ID: string): Promise<LocalDatabaseUser> {
     let user = this.getUserFromLocalDB(ID);
 
     //if the user is not in the local database, get it from the database
@@ -106,6 +106,7 @@ export default class Database {
         user = newUser;
       }
     }
+    //@ts-ignore
     return user;
   }
 

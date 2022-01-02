@@ -35,3 +35,16 @@ export type LocalDatabase = {
   insert: LocalDatabaseUser[];
   update: LocalDatabaseUser[];
 };
+
+
+export type ReactUser = {
+
+  ID: string;
+  totalReacts: number;
+  totalScore: number;
+  totalms: number;
+  last10Reacts: number[];
+  lastReact: number;
+}
+
+export type ReactDatabase = ReactUser[];

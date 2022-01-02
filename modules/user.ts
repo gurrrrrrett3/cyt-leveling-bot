@@ -60,6 +60,13 @@ export default class User {
 
   }
 
+  public giveXP(amount: number) {
+    this.xp += amount;
+    this.total += amount;
+
+    this.levelUp();
+  }
+
   private levelUp() {
     if (this.xp >= this.genXPNeeded()) {
       this.xp -= this.genXPNeeded();

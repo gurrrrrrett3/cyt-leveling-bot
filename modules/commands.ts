@@ -6,6 +6,11 @@ import Database from "./database";
 import User from "./user";
 import Api from "./api";
 import React from "./react";
+import auth from "../data/auth.json";
+import lang from "../data/lang.json";
+import reactDB from "./reactdb";
+
+let reactDatabase = new reactDB(auth.react.file);
 
 export const Commands = {
   help: {
@@ -28,7 +33,6 @@ export const Commands = {
       message.reply({ embeds: [embed] });
     },
   },
-
   ping: {
     name: "ping",
     description: "Pong!",
@@ -36,10 +40,10 @@ export const Commands = {
     category: "General",
     aliases: ["p"],
     run: async (Client: Discord.Client, message: Discord.Message, db: Database) => {
-      message.reply("Pong!").then((msg) => {
+      message.reply(lang.ping.ping_pong).then((msg) => {
         const ping = msg.createdTimestamp - message.createdTimestamp;
 
-        const embed = Util.genEmbed("Pong!", `🔁 ${ping}ms \n💟 ${Client.ws.ping}ms`);
+        const embed = Util.genEmbed(lang.ping.ping_pong, `🔁 ${ping}ms \n💟 ${Client.ws.ping}ms`);
 
         msg.edit({ embeds: [embed] });
       });
@@ -66,7 +70,9 @@ export const Commands = {
 
       const embed = Util.genEmbed(
         `${await Client.users.fetch(user).then((u) => u.username)}'s level`,
-        `**Level:** ${userData.level}\n**XP:** ${userData.xp}\n**XP to next level:** ${
+        `**${lang.leaderboard.leaderboard_level}:** ${userData.level}\n**${
+          lang.leaderboard.leaderboard_xp
+        }:** ${userData.xp}\n**${lang.leaderboard.leaderboard_to_next_level}:** ${
           userData.genXPNeeded() - userData.xp
         }\n\n ${Util.formatProgressBar(10, userData.xp, userData.genXPNeeded(), userData.level)}`
       );
@@ -94,12 +100,17 @@ export const Commands = {
 
         fields.push({
           name: `${i + 1} ${username}`,
-          value: `**Level:** \`${level}\`\n**XP:** \`${total}\``,
+          value: `**${lang.leaderboard.leaderboard_level}:** \`${level}\`\n**${lang.leaderboard.leaderboard_xp}:** \`${total}\``,
           inline: true,
         });
       }
 
-      let embed = Util.genEmbed("Leaderboard", `Top 10 users for ${message.guild?.name}`, 0x00ff00, fields);
+      let embed = Util.genEmbed(
+        lang.leaderboard.leaderboard_title,
+        `${lang.leaderboard.leaderboard_subtitle} ${message.guild?.name}`,
+        0x00ff00,
+        fields
+      );
       message.reply({ embeds: [embed] });
     },
   },
@@ -111,27 +122,85 @@ export const Commands = {
     category: "Levels",
     aliases: ["r"],
     run: async (Client: Discord.Client, message: Discord.Message, db: Database) => {
+      if (!reactDatabase.checkIfUserCanUse(message.author.id)) {
+        const embed = Util.genEmbed(
+          "React",
+          `You can use this command in ${Util.formatTime(reactDatabase.getTimeLeft(message.author.id))}`,
+          0xff0000
+        );
+
+        message.reply({ embeds: [embed] });
+        return;
+      }
+
+      const embed = Util.genEmbed(lang.react.react_get_ready_title, lang.react.react_get_ready_subtitle);
+
+      message.reply({ embeds: [embed] }).then((msg) => {
+        setTimeout(async () => {
+          let r = new React(message);
+          let g = await r.generate();
+          let e = g.embed;
+          let b = g.row;
+          msg.edit({ embeds: [e], components: [b] });
+        }, Util.randomInt(auth.react.react_min_delay, auth.react.react_max_delay));
+      });
+    },
+  },
+  rlb: {
+    name: "rlb",
+    description: "Shows the top 10 users who reacted",
+    usage: "!rlb, !rlb <user>",
+    category: "Levels",
+    aliases: ["rl"],
+    run: async (Client: Discord.Client, message: Discord.Message, db: Database) => {
+      let users = await reactDatabase.getTopUsers(10);
+
+      let fields: { name: string; value: string; inline: boolean }[] = [];
+
+      for (let i = 0; i < users.length; i++) {
+        let user = users[i];
+        const reactCount = user.totalReacts;
+        const average = Math.round(reactDatabase.getAverageReactTime(user.ID));
+        const username = await Client.users.fetch(user.ID).then((u) => u.username);
+
+        fields.push({
+          name: `${i + 1} ${username}`,
+          value: `**${lang.reactlb.rlb_average}:** \`${average}ms\`\n**${lang.reactlb.rlb_total_reacts}:** \`${reactCount}\``,
+          inline: true,
+        });
+      }
+
+      let embed = new Discord.MessageEmbed()
+        .setTitle(lang.reactlb.rlb_title)
+        .setDescription(`${lang.reactlb.rlb_subtitle} ${message.guild?.name}`)
+        .setColor(0x00ff00)
+        .setFooter(`${lang.embed.embed_footer}`)
+        .setTimestamp()
+        .addFields(fields);
+
+      message.reply({ embeds: [embed] });
+    },
+  },
+  reactUser: {
+    name: "reactuser",
+    description: "Shows info on a single react user",
+    usage: "!reactuser, !reactuser <user>",
+    category: "Levels",
+    aliases: ["ru"],
+    run: async (Client: Discord.Client, message: Discord.Message, db: Database) => {
+      let user = message.mentions.users.first() ?? message.author;
+      let userData = reactDatabase.getUser(user.id);
 
       const embed = Util.genEmbed(
-        "Get Ready...",
-        "Please Wait..."
+        `${await Client.users.fetch(user).then((u) => u.username)}'s react stats`,
+        `**${lang.reactlb.rlb_total_reacts}:** ${userData.totalReacts}\n**${
+          lang.reactlb.rlb_average
+        }:** ${reactDatabase.getAverageReactTime(userData.ID)}ms`
       );
 
       message.reply({ embeds: [embed] });
-
-      setTimeout(async () => {
-
-        let r = new React(message);
-        let g = await r.generate();
-        let e = g.embed;
-        let b = g.row;
-
-        message.reply({ embeds: [e], components: [b] });
-
-      }, Util.randomInt(3000, 10000));
     },
   },
-
   dbData: {
     name: "db",
     description: "Shows the database data",
@@ -162,7 +231,7 @@ export const Commands = {
         .setTitle("Random Cat")
         .setImage(await Api.getRandomCat())
         .setColor(0x00ff00)
-        .setFooter("Powered by thecatapi.com")
+        .setFooter(`${lang.embed.embed_footer} | Powered by thecatapi.com`)
         .setTimestamp();
 
       const row = new Discord.MessageActionRow().addComponents(
@@ -172,7 +241,6 @@ export const Commands = {
       message.reply({ embeds: [embed], components: [row] });
     },
   },
-
   corgi: {
     name: "corgi",
     description: "Gets a random corgi",
@@ -180,19 +248,18 @@ export const Commands = {
     category: "Fun",
     aliases: ["corgy"],
     run: async (Client: Discord.Client, message: Discord.Message, db: Database) => {
-
       const embed = new Discord.MessageEmbed()
         .setTitle("Random Corgi")
         .setImage(await Api.getRandomCorgi())
         .setColor(0x00ff00)
-        .setFooter("Powered by dog.ceo")
+        .setFooter(`${lang.embed.embed_footer} | Powered by dog.ceo`)
         .setTimestamp();
-        
+
       const row = new Discord.MessageActionRow().addComponents(
         new MessageButton().setCustomId("anotherCorgi").setLabel("Another!").setStyle("SUCCESS")
       );
 
       message.reply({ embeds: [embed], components: [row] });
-    }
+    },
   },
 };

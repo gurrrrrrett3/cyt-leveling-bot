@@ -47,4 +47,10 @@ export default class Util {
         }
         return array;
       }
+
+      public static formatTime(time: number) {
+        const minutes = Math.floor(time / 6e4);
+        const seconds = Math.floor((time % 6e4) / 1000);
+        return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+      }
 }

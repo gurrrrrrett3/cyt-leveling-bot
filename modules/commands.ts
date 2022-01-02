@@ -29,9 +29,9 @@ export const Commands = {
           `**${discord.prefix}level <user>** - Shows the level of a user\n` +
           `**${discord.prefix}leaderboard** - Shows the top 10 users\n` +
           `**${discord.prefix}react** - gives you a react challenge to get xp\n` +
-          `**${discord.prefix}reactlb - shows the top 10 react users\n` +
-          `**${discord.prefix}reactuser - shows your react stats\n` +
-          `**${discord.prefix}reactuser <user> - shows someone else's react stats react stats\n`
+          `**${discord.prefix}reactlb** - shows the top 10 react users\n` +
+          `**${discord.prefix}reactuser** - shows your react stats\n` +
+          `**${discord.prefix}reactuser <user>** - shows someone else's react stats react stats\n`
       );
 
       message.reply({ embeds: [embed] });

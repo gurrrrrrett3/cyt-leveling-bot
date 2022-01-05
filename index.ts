@@ -3,6 +3,7 @@ import auth from "./data/auth.json";
 import Bot from "./modules/bot";
 import checkForDbs from "./modules/checkForDbs";
 import Database from "./modules/database";
+import onFirstRun from "./modules/onFirstRun";
 
 const db = new Database({
   host: auth.database.host,
@@ -16,6 +17,10 @@ checkForDbs()
 
 //connect to database
 db.Connect().then(async () => {
+
+  //Run first run code
+
+  onFirstRun(db);
 
   //Log in to discord
 

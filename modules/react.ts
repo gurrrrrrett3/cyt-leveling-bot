@@ -33,7 +33,7 @@ export default class React {
   }
 
   public async handle(interaction: Discord.ButtonInteraction, db: Database) {
-    let clicked = interaction.customId
+    let clicked = interaction.customId;
     let correct = clicked.startsWith("REACTT");
     let letter = clicked.charAt(6);
     let ms = parseInt(clicked.substr(7));
@@ -110,9 +110,10 @@ export default class React {
     let buttons = React.generateButtons();
 
     let letters = [correctLetter];
-    for (var i = 0; i < auth.react.react_button_count - 1; i++)
+    for (var i = 0; i < auth.react.react_button_count - 1; i++) {
       letters.push(React.generateLetter(letters.map((l) => l.letter)));
-
+    }
+    
     Util.randomizeArray(letters);
 
     buttons.forEach((b, index) => {

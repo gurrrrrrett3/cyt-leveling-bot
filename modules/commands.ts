@@ -12,6 +12,7 @@ import reactDB from "./reactdb";
 import packageJson from "../package.json";
 
 let reactDatabase = new reactDB(auth.react.file);
+let startTime = Date.now();
 
 export const Commands = {
   help: {
@@ -63,6 +64,12 @@ export const Commands = {
       feilds.push({
         name: "Version",
         value: packageJson.version,
+        inline: true,
+      });
+
+      feilds.push({
+        name: "Uptime",
+        value: Util.formatTime(Date.now() - startTime),
         inline: true,
       });
 

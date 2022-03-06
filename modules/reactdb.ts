@@ -68,7 +68,7 @@ export default class reactDB {
   public getTopUsers(count: number): ReactUser[] {
     let db = this.getDB();
 
-    let users = db.sort((a, b) => this.getAverageReactTime(a.ID) - this.getAverageReactTime(b.ID));
+    let users = db.sort((a, b) => this.getAverageReactTime(b.ID) - this.getAverageReactTime(a.ID));
 
     return users.slice(0, count);
   }

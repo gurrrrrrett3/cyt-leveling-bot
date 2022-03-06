@@ -286,7 +286,7 @@ export const Commands = {
         .setTitle("Random Cat")
         .setImage(await Api.getRandomCat())
         .setColor(0x00ff00)
-        .setFooter(`${lang.embed.embed_footer} | Powered by thecatapi.com`)
+        .setFooter(`${lang.embed.embed_footer} | Requested by ${message.author} | Powered by thecatapi.com`)
         .setTimestamp();
 
       const row = new Discord.MessageActionRow().addComponents(
@@ -307,7 +307,7 @@ export const Commands = {
         .setTitle("Random Corgi")
         .setImage(await Api.getRandomCorgi())
         .setColor(0x00ff00)
-        .setFooter(`${lang.embed.embed_footer} | Powered by dog.ceo`)
+        .setFooter(`${lang.embed.embed_footer} | Requested by ${message.author} | Powered by dog.ceo`)
         .setTimestamp();
 
       const row = new Discord.MessageActionRow().addComponents(

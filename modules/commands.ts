@@ -307,7 +307,7 @@ export const Commands = {
         .setTitle("Random Corgi")
         .setImage(await Api.getRandomCorgi())
         .setColor(0x00ff00)
-        .setFooter(`${lang.embed.embed_footer} | Requested by ${message.author} | Powered by dog.ceo`)
+        .setFooter(`${lang.embed.embed_footer} | Requested by ${message.author.username } | Powered by dog.ceo`)
         .setTimestamp();
 
       const row = new Discord.MessageActionRow().addComponents(

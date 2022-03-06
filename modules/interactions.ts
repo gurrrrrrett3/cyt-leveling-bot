@@ -15,6 +15,7 @@ export const interactions = {
         const command = commandHandler.getCommand("cat");
 
         if (command) {
+          interaction.message.author = interaction.user;
           //@ts-ignore
           command.run(client, interaction.message, db);
           interaction.reply("Fetching...");
@@ -34,6 +35,7 @@ export const interactions = {
       ) => {
         const command = commandHandler.getCommand("corgi");
         if (command) {
+          interaction.message.author = interaction.user;
           //@ts-ignore
           command.run(client, interaction.message, db);
           interaction.reply("Fetching...");

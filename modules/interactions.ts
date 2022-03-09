@@ -15,6 +15,7 @@ export const interactions = {
         const command = commandHandler.getCommand("cat");
 
         if (command) {
+      if (interaction.channel?.id != "920719074030387232") return;
           interaction.message.author = interaction.user;
           //@ts-ignore
           command.run(client, interaction.message, db);
@@ -35,6 +36,7 @@ export const interactions = {
       ) => {
         const command = commandHandler.getCommand("corgi");
         if (command) {
+      if (interaction.channel?.id != "920719074030387232") return;
           interaction.message.author = interaction.user;
           //@ts-ignore
           command.run(client, interaction.message, db);

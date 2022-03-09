@@ -61,7 +61,7 @@ export default class React {
     user.totalReacts++;
     user.totalScore += xp;
     user.lastReact = Date.now();
-    user.totalms += took;
+    user.totalms += correct ? took : 1e5;
 
     if (user.last10Reacts.length >= 10) {
       user.last10Reacts.shift();

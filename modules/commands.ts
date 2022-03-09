@@ -35,7 +35,7 @@ export const Commands = {
           `**${discord.prefix}reactuser** - shows your react stats\n` +
           `**${discord.prefix}reactuser <user>** - shows someone else's react stats react stats\n`
       );
-
+      if (message.channel.id != "920719074030387232") return;
       message.reply({ embeds: [embed] });
     },
   },
@@ -87,10 +87,11 @@ export const Commands = {
 
       feilds.push({
         name: "Any bugs?",
-        value: `Report them here: ${packageJson.bugs.url}`
+        value: `Report them here: ${packageJson.bugs.url}`,
       });
 
       const embed = Util.genEmbed("Credits", "", 0x00ff00, feilds);
+      if (message.channel.id != "920719074030387232") return;
 
       message.reply({ embeds: [embed] });
     },
@@ -106,6 +107,7 @@ export const Commands = {
         const ping = msg.createdTimestamp - message.createdTimestamp;
 
         const embed = Util.genEmbed(lang.ping.ping_pong, `🔁 ${ping}ms \n💟 ${Client.ws.ping}ms`);
+        if (message.channel.id != "920719074030387232") return;
 
         msg.edit({ embeds: [embed] });
       });
@@ -138,6 +140,7 @@ export const Commands = {
           userData.genXPNeeded() - userData.xp
         }\n\n ${Util.formatProgressBar(10, userData.xp, userData.genXPNeeded(), userData.level)}`
       );
+      if (message.channel.id != "920719074030387232") return;
 
       message.reply({ embeds: [embed] });
     },
@@ -173,6 +176,7 @@ export const Commands = {
         0x00ff00,
         fields
       );
+      if (message.channel.id != "920719074030387232") return;
       message.reply({ embeds: [embed] });
     },
   },
@@ -190,7 +194,7 @@ export const Commands = {
           `You can use this command in ${Util.formatTime(reactDatabase.getTimeLeft(message.author.id))}`,
           0xff0000
         );
-
+        if (message.channel.id != "920719074030387232") return;
         message.reply({ embeds: [embed] });
         return;
       }
@@ -240,6 +244,8 @@ export const Commands = {
         .setTimestamp()
         .addFields(fields);
 
+      if (message.channel.id != "920719074030387232") return;
+
       message.reply({ embeds: [embed] });
     },
   },
@@ -260,6 +266,8 @@ export const Commands = {
         }:** ${reactDatabase.getAverageReactTime(userData.ID)}ms`
       );
 
+      if (message.channel.id != "920719074030387232") return;
+
       message.reply({ embeds: [embed] });
     },
   },
@@ -277,6 +285,7 @@ export const Commands = {
         `**Total Local Users:** \`${data.localUsers}\`\n**Total Local Users waiting to be inserted:** \`${data.localInsert}\`\n**Total Local Users waiting to be updated:** \`${data.localUpdate}\`\n**Last Update:** <t:${data.lastUpdate}:R>\n**Next Update:** <t:${data.nextUpdate}:R>\n**Total Database Queries since last update:** \`${data.databaseQueryCount}\``,
         0x00ff00
       );
+      if (message.channel.id != "920719074030387232") return;
 
       message.reply({ embeds: [embed] });
     },
@@ -300,6 +309,8 @@ export const Commands = {
         new MessageButton().setCustomId("anotherCat").setLabel("Another!").setStyle("SUCCESS")
       );
 
+      if (message.channel.id != "920719074030387232") return;
+
       message.reply({ embeds: [embed], components: [row] });
     },
   },
@@ -314,12 +325,16 @@ export const Commands = {
         .setTitle("Random Corgi")
         .setImage(await Api.getRandomCorgi())
         .setColor(0x00ff00)
-        .setFooter(`${lang.embed.embed_footer} | Requested by ${message.author.username } | Powered by dog.ceo`)
+        .setFooter(
+          `${lang.embed.embed_footer} | Requested by ${message.author.username} | Powered by dog.ceo`
+        )
         .setTimestamp();
 
       const row = new Discord.MessageActionRow().addComponents(
         new MessageButton().setCustomId("anotherCorgi").setLabel("Another!").setStyle("SUCCESS")
       );
+
+      if (message.channel.id != "920719074030387232") return;
 
       message.reply({ embeds: [embed], components: [row] });
     },

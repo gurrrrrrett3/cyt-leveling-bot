@@ -14,8 +14,6 @@ export default class CommandHandler {
     this.Client = client;
     this.db = db;
     this.prefix = auth.discord.prefix;
-
-
   }
 
   public async handle(message: Discord.Message) {
@@ -35,13 +33,11 @@ export default class CommandHandler {
         console.error(e);
       }
     } else {
-      message.reply({embeds: [Util.genEmbed("Error", "Command not found", 0xFF0000)]});
+      //message.reply({embeds: [Util.genEmbed("Error", "Command not found", 0xFF0000)]});
     }
   }
 
-    public getCommand(name: string): Command | undefined {
-      return Object.values(Commands).find((cmd) => cmd.name === name || cmd.aliases.includes(name));
-    }
-
+  public getCommand(name: string): Command | undefined {
+    return Object.values(Commands).find((cmd) => cmd.name === name || cmd.aliases.includes(name));
+  }
 }
-

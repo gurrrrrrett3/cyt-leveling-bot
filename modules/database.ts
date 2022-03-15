@@ -2,7 +2,8 @@ import mariadb from "mariadb";
 import fs from "fs";
 import { DatabaseUser, LocalDatabase, LocalDatabaseUser } from "./types";
 import Util from "./util";
-import auth from "../data/auth.json";
+import config from "../config.json";
+import auth from "../auth.json";
 import User from "./user";
 
 const localDataFile = "./data/localdb.json";
@@ -11,7 +12,7 @@ export default class Database {
   private pool: mariadb.Pool;
   //@ts-ignore
   private conn: mariadb.PoolConnection;
-  private nextUpdate: number = Date.now() + Util.minutesToMilliseconds(auth.database.db_update_interval_minutes);
+  private nextUpdate: number = Date.now() + Util.minutesToMilliseconds(config.settings.database.UPDATE_INTERVAL);
   private lastUpdate = Date.now();
   private databaseQueryCount = 0;
 
@@ -36,27 +37,27 @@ export default class Database {
       .then((conn) => {
         this.conn = conn;
         this.conn
-          .query(`use ${auth.database.name}`)
+          .query(`use ${auth.database.NAME}`)
           .then((rows) => {
-            console.log(`Using database ${auth.database.name}`);
+            console.log(`Using database ${auth.database.NAME}`);
           })
           .catch((err) => {
-            console.log(`${auth.database.name} database not found, creating it`);
-            this.conn.query(`create database ${auth.database.name}`).then((rows) => {
-              console.log(`Created database ${auth.database.name}`);
+            console.log(`${auth.database.NAME} database not found, creating it`);
+            this.conn.query(`create database ${auth.database.NAME}`).then((rows) => {
+              console.log(`Created database ${auth.database.NAME}`);
             });
           })
           .then(() => {
             this.databaseQueryCount++;
             this.conn
               .query(
-                `create table ${auth.database.table} (ID CHAR(18) not null primary key, LEVEL int not null, XP int not null, TOTAL int not null, LAST bigint not null)`
+                `create table ${auth.database.TABLE} (ID CHAR(18) not null primary key, LEVEL int not null, XP int not null, TOTAL int not null, LAST bigint not null)`
               )
               .then((rows) => {
                 console.log(rows);
               })
               .catch((err) => {
-                console.log(`${auth.database.table} exists, not creating it`);
+                console.log(`${auth.database.TABLE} exists, not creating it`);
               });
 
             //add the local data to the database in case of a crash
@@ -133,7 +134,7 @@ export default class Database {
   }
 
   public async getTop(amount: number) {
-    let rows: any[] = await this.conn.query(`select * from ${auth.database.table} order by TOTAL desc limit ?`, [
+    let rows: any[] = await this.conn.query(`select * from ${auth.database.TABLE} order by TOTAL desc limit ?`, [
       amount,
     ]);
     this.databaseQueryCount++;
@@ -187,7 +188,7 @@ export default class Database {
   }
 
   private async getUserfromDatabase(ID: string) {
-    const rows = await this.conn.query(`SELECT * FROM ${auth.database.table} WHERE ID = ?`, ID);
+    const rows = await this.conn.query(`SELECT * FROM ${auth.database.TABLE} WHERE ID = ?`, ID);
     this.databaseQueryCount++;
     return rows[0];
   }
@@ -260,7 +261,7 @@ export default class Database {
 
     this.databaseQueryCount++;
     this.conn
-      .batch(`insert into ${auth.database.table} (ID, LEVEL, XP, TOTAL, LAST) values (?, ?, ?, ?, ?)`, newData)
+      .batch(`insert into ${auth.database.TABLE} (ID, LEVEL, XP, TOTAL, LAST) values (?, ?, ?, ?, ?)`, newData)
       .catch((err) => {
         console.log("Error inserting users into database");
         console.error(err);
@@ -276,7 +277,7 @@ export default class Database {
 
     this.databaseQueryCount++;
     this.conn
-      .batch(`update ${auth.database.table} set LEVEL = ?, XP = ?, TOTAL = ? , LAST = ? where ID = ?`, newData)
+      .batch(`update ${auth.database.TABLE} set LEVEL = ?, XP = ?, TOTAL = ? , LAST = ? where ID = ?`, newData)
       .catch((err) => {
         console.log("Error updating database");
         console.error(err);
@@ -302,7 +303,7 @@ export default class Database {
   }
 
   private setUpdateTime() {
-    this.nextUpdate = Date.now() + Util.minutesToMilliseconds(auth.database.db_update_interval_minutes);
+    this.nextUpdate = Date.now() + Util.minutesToMilliseconds(config.settings.database.UPDATE_INTERVAL);
     this.lastUpdate = Date.now();
   }
 }

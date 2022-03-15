@@ -1,6 +1,6 @@
 import { ReactDatabase, ReactUser } from "./types";
 import fs from "fs";
-import auth from "../data/auth.json";
+import config from "../config.json";
 
 export default class reactDB {
   private localDBFile: string;
@@ -44,7 +44,7 @@ export default class reactDB {
   public checkIfUserCanUse(id: string): boolean {
     let user = this.getUser(id);
 
-    if (user.lastReact + auth.react.react_cooldown_time > Date.now()) {
+    if (user.lastReact + config.settings.react.COOLDOWN_TIME > Date.now()) {
       return false;
     } else {
       return true;
@@ -54,7 +54,7 @@ export default class reactDB {
   public getTimeLeft(id: string): number {
     let user = this.getUser(id);
 
-    let timeLeft = auth.react.react_cooldown_time - (Date.now() - user.lastReact);
+    let timeLeft = config.settings.react.COOLDOWN_TIME - (Date.now() - user.lastReact);
 
     return timeLeft;
   }

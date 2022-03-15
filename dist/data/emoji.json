@@ -1,0 +1,111 @@
+{
+    "progressbar": {
+        "empty": "⬛",
+        "full": "🟦"
+    },
+    "letters": [{
+            "letter": "A",
+            "emoji": "🇦"
+        },
+        {
+            "letter": "B",
+            "emoji": "🇧"
+        },
+        {
+            "letter": "C",
+            "emoji": "🇨"
+        },
+        {
+            "letter": "D",
+            "emoji": "🇩"
+        },
+        {
+            "letter": "E",
+            "emoji": "🇪"
+        },
+        {
+            "letter": "F",
+            "emoji": "🇫"
+        },
+        {
+            "letter": "G",
+            "emoji": "🇬"
+        },
+        {
+            "letter": "H",
+            "emoji": "🇭"
+        },
+        {
+            "letter": "I",
+            "emoji": "🇮"
+        },
+        {
+            "letter": "J",
+            "emoji": "🇯"
+        },
+        {
+            "letter": "K",
+            "emoji": "🇰"
+        },
+        {
+            "letter": "L",
+            "emoji": "🇱"
+        },
+        {
+            "letter": "M",
+            "emoji": "🇲"
+        },
+        {
+            "letter": "N",
+            "emoji": "🇳"
+        },
+        {
+            "letter": "O",
+            "emoji": "🇴"
+        },
+        {
+            "letter": "P",
+            "emoji": "🇵"
+        },
+        {
+            "letter": "Q",
+            "emoji": "🇶"
+        },
+        {
+            "letter": "R",
+            "emoji": "🇷"
+        },
+        {
+            "letter": "S",
+            "emoji": "🇸"
+        },
+        {
+            "letter": "T",
+            "emoji": "🇹"
+        },
+        {
+            "letter": "U",
+            "emoji": "🇺"
+        },
+        {
+            "letter": "V",
+            "emoji": "🇻"
+        },
+        {
+            "letter": "W",
+            "emoji": "🇼"
+        },
+        {
+            "letter": "X",
+            "emoji": "🇽"
+        },
+        {
+            "letter": "Y",
+            "emoji": "🇾"
+        },
+        {
+            "letter": "Z",
+            "emoji": "🇿"
+        }
+    ]
+}

@@ -48,8 +48,26 @@ export default class React {
       .setDescription(`You took ${took}ms to react${correct ? `\nand got ${xp}xp!` : `!`}`)
       .setColor(correct ? 0x00ff00 : 0xff0000);
 
-      if (!this.interaction.isButton()) return;
-    this.interaction.reply({ embeds: [embed], components: [] });
+    if (!this.interaction.isButton()) return;
+
+    interaction.client.channels.fetch(interaction.channelId).then((channel) => {
+      if (!channel?.isText()) return;
+      channel.messages.fetch(interaction.message.id).then((message) => {
+        let letters: string[] = [];
+        let correctID = 0;
+
+        message.components[0].components.forEach((c, i) => {
+          const id = c.customId ?? "";
+          if (id.startsWith("REACTT")) {
+            correctID = i;
+          }
+          letters.push(id.charAt(6));
+        });
+
+        message.edit({ embeds: [embed], components: [React.generateDisabledRow(correctID, letters)] });
+        interaction.reply({content: "\u200b"}).then(() => interaction.deleteReply())
+      });
+    });
 
     if (correct) {
       let dbUser = await db.getUser(interaction.user.id);
@@ -115,7 +133,7 @@ export default class React {
     for (var i = 0; i < config.settings.react.BUTTON_COUNT - 1; i++) {
       letters.push(React.generateLetter(letters.map((l) => l.letter)));
     }
-    
+
     Util.randomizeArray(letters);
 
     buttons.forEach((b, index) => {
@@ -124,6 +142,25 @@ export default class React {
       row.addComponents(b);
     });
 
+    return row;
+  }
+
+  private static generateDisabledRow(correctID: number, letters: string[]) {
+    let row = new Discord.MessageActionRow();
+    let buttons: Discord.MessageButton[] = [];
+
+    for (var i = 0; i < config.settings.react.BUTTON_COUNT; i++) {
+      let b = new Discord.MessageButton().setStyle(i == correctID ? "SUCCESS" : "DANGER");
+      b.setEmoji(
+        emojis.letters.find((l) => {
+          return l.letter == letters[i];
+        })?.emoji as string
+      );
+      b.setCustomId(i.toString());
+      buttons.push(b);
+      b.setDisabled(true);
+    }
+    row.addComponents(buttons);
     return row;
   }
 }

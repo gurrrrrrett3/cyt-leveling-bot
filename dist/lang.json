@@ -1,0 +1,37 @@
+{
+    "general": {
+        "general_error_embed_title": "Oops!",
+        "general_channel_not_allowed": "Sorry, you can't use the bot in this channel."
+    },
+    "embed": {
+        "embed_footer": "craftyour.town"
+    },
+    "react": {
+        "react_title": "Think Fast!",
+        "react_button": "Click the button that matches the letter!",
+        "react_click": "Click",
+        "react_correct": "Correct!",
+        "react_incorrect": "Incorrect!",
+        "react_get_ready_title": "Get Ready...",
+        "react_get_ready_subtitle": "Please Wait...",
+        "react_not_ready_title": "Oops!",
+        "react_not_ready_subtitle": "You can use this command in: "
+    },
+    "reactlb": {
+        "rlb_title": "React Leaderboard",
+        "rlb_subtitle": "Top 10 Players for ",
+        "rlb_average": "Average Reaction",
+        "rlb_total_reacts": "Total React Count"
+    },
+    "leaderboard": {
+        "leaderboard_title": "Leaderboard",
+        "leaderboard_subtitle": "Top 10 Players for ",
+        "leaderboard_level": "Level",
+        "leaderboard_xp": "XP",
+        "leaderboard_rank": "Rank",
+        "leaderboard_to_next_level": "XP to Next Level"
+    },
+    "ping": {
+        "ping_pong": "Pong!"
+    }
+}

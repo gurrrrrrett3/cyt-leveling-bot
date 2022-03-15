@@ -4,7 +4,7 @@
     "description": "",
     "main": "./dist/index.js",
     "scripts": {
-        "start": "npm run pull && npm run build && echo \"Running\" && node out/index.js",
+        "start": "npm run pull && npm run build && echo \"Running\" && node dist/index.js",
         "pull": "git pull",
         "build": "npm run depends && echo \"Compiling\" && tsc",
         "depends": "echo \"Installing dependencies\" && npm i",

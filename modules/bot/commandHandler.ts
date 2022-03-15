@@ -25,7 +25,6 @@ export default class CommandHandler {
       console.log(`Deploying ${commandFiles.length} commands`);
 
       for (const file of commandFiles) {
-        console.log(`Deploying ${file}`);
         const command: Command = require(`./commands/${file}`);
         this.commands.set(command.data.name, command);
         commandsToDeploy.push(command.data);
@@ -35,8 +34,8 @@ export default class CommandHandler {
 
       this.client.application?.commands.set([]);
 
-      rest
-        .put(Routes.applicationGuildCommands(applicationId, "909808939045113887"), {
+      rest                                                                             //yes this looks stupid but it's so I can develop on my server
+        .put(Routes.applicationGuildCommands(applicationId, this.client.user?.id == "874218421569593364" ? "909808939045113887" : config.settings.general.SERVER_ID), {
           body: commandsToDeploy,
         })
         .then(() => {

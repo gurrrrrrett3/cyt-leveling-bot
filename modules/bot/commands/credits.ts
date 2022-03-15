@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import Discord, { Client, EmbedFieldData } from 'discord.js';
-import packageJson from '../../../package.json';
+import fs from 'fs';
 import Util from '../../util';
 
 const Command = {
@@ -10,8 +10,9 @@ const Command = {
         async execute(interaction: Discord.CommandInteraction, ...args: any[]) {
             let packages: string[]  = [];
 
+            const packageJson = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
+
             Object.keys(packageJson.dependencies).forEach((key) => {
-                //@ts-expect-error
                 packages.push(`${key} - ${packageJson.dependencies[key]}`);
               });
 

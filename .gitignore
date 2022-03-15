@@ -80,3 +80,5 @@ out/
 data/auth.json
 data/localdb.json
 data/reactdb.json
+
+database-auth.json

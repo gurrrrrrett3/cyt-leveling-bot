@@ -12,12 +12,17 @@
     },
     {
         "ID": "232510731067588608",
-        "totalReacts": 1,
-        "totalScore": 33,
-        "totalms": 1674,
+        "totalReacts": 6,
+        "totalScore": 177,
+        "totalms": 8835,
         "last10Reacts": [
-            1674
+            1674,
+            1291,
+            1849,
+            1434,
+            1499,
+            1088
         ],
-        "lastReact": 1641091370976
+        "lastReact": 1647320825011
     }
 ]

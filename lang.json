@@ -1,4 +1,8 @@
-{
+{   
+    "general": {
+      "general_error_embed_title": "Oops!",
+      "general_channel_not_allowed": "Sorry, you can't use the bot in this channel."  
+    },
     "embed": {
         "embed_footer": "craftyour.town"
     },
@@ -9,7 +13,9 @@
         "react_correct": "Correct!",
         "react_incorrect": "Incorrect!",
         "react_get_ready_title": "Get Ready...",
-        "react_get_ready_subtitle": "Please Wait..."
+        "react_get_ready_subtitle": "Please Wait...",
+        "react_not_ready_title": "Oops!",
+        "react_not_ready_subtitle": "You can use this command in: "
     },
     "reactlb": {
         "rlb_title": "React Leaderboard",

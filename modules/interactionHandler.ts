@@ -25,7 +25,7 @@ export default class InteractionHandler {
       if (interaction.customId.startsWith("REACT")) {
         //@ts-ignore
         let react = new React(message);
-        react.handle(interaction, this.db);
+        react.handle(interaction);
       }
 
       const interactionData = this.getButtonInteraction(interaction.customId);

@@ -5,15 +5,16 @@ import { Letter } from "./types";
 import User from "./user";
 import Util from "./util";
 import reactDB from "./reactdb";
-import lang from "../data/lang.json";
-import auth from "../data/auth.json";
+import lang from "../lang.json";
+import config from "../config.json";
+import { db } from "..";
 
 export default class React {
-  public message: Discord.Message;
-  public reactDB = new reactDB(auth.react.file);
+  public interaction: Discord.Interaction;
+  public reactDB = new reactDB(config.settings.react.FILE);
 
-  constructor(message: Discord.Message) {
-    this.message = message;
+  constructor(interaction: Discord.Interaction) {
+    this.interaction = interaction;
   }
 
   public async generate() {
@@ -32,22 +33,23 @@ export default class React {
     };
   }
 
-  public async handle(interaction: Discord.ButtonInteraction, db: Database) {
+  public async handle(interaction: Discord.ButtonInteraction) {
     let clicked = interaction.customId;
     let correct = clicked.startsWith("REACTT");
     let letter = clicked.charAt(6);
     let ms = parseInt(clicked.substr(7));
     const took = Date.now() - ms;
     let xp =
-      took > auth.react.max_react_time
+      took > config.settings.react.MAX_TIME
         ? 0
-        : Math.round((auth.react.max_react_time - took) / auth.react.ms_per_xp);
+        : Math.round((config.settings.react.MAX_TIME - took) / config.settings.react.MS_PER_XP);
     const embed = new Discord.MessageEmbed()
       .setTitle(correct ? lang.react.react_correct : lang.react.react_incorrect)
       .setDescription(`You took ${took}ms to react${correct ? `\nand got ${xp}xp!` : `!`}`)
       .setColor(correct ? 0x00ff00 : 0xff0000);
 
-    this.message.edit({ embeds: [embed], components: [] });
+      if (!this.interaction.isButton()) return;
+    this.interaction.reply({ embeds: [embed], components: [] });
 
     if (correct) {
       let dbUser = await db.getUser(interaction.user.id);
@@ -88,7 +90,7 @@ export default class React {
   private static generateButtons() {
     let buttons: Discord.MessageButton[] = [];
 
-    for (var i = 0; i < auth.react.react_button_count; i++) {
+    for (var i = 0; i < config.settings.react.BUTTON_COUNT; i++) {
       let b = new Discord.MessageButton().setStyle(React.generateRandomStyle());
       buttons.push(b);
     }
@@ -110,7 +112,7 @@ export default class React {
     let buttons = React.generateButtons();
 
     let letters = [correctLetter];
-    for (var i = 0; i < auth.react.react_button_count - 1; i++) {
+    for (var i = 0; i < config.settings.react.BUTTON_COUNT - 1; i++) {
       letters.push(React.generateLetter(letters.map((l) => l.letter)));
     }
     

@@ -1,16 +1,18 @@
 import Discord from "discord.js";
-import auth from "./data/auth.json";
-import Bot from "./modules/bot";
+import auth from "./auth.json";
+import Bot from "./modules/bot/bot";
 import checkForDbs from "./modules/checkForDbs";
 import Database from "./modules/database";
 import onFirstRun from "./modules/onFirstRun";
 
-const db = new Database({
-  host: auth.database.host,
-  port: auth.database.port,
-  user: auth.database.user,
-  password: auth.database.password,
+export const db = new Database({
+  host: auth.database.HOST,
+  port: auth.database.PORT,
+  user: auth.database.USER,
+  password: auth.database.PASSWORD,
 });
+
+export let bot: Bot;
 
 //check if db files exist and create them if they don't
 checkForDbs()
@@ -37,15 +39,12 @@ db.Connect().then(async () => {
     ],
   });
 
-  Client.login(auth.discord.token);
+  Client.login(auth.discord.TOKEN);
+
+  //initialize bot
+  bot = new Bot(Client);
 
   Client.once("ready", async() => {
-    console.log(`Logged in as ${Client.user?.tag}`);
-
     Client.user?.setActivity("on CYT | craftyour.town | !help", { type: "PLAYING" });
-
-    //Initialize the bot
-
-    new Bot(Client, db);
   });
 });

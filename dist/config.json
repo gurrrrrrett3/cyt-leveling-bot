@@ -1,0 +1,32 @@
+{
+    "settings": {
+        "general": {
+            "SERVER_ID": "298107515391180810",
+            "ALLOWED_CHANNELS": ["920719074030387232", "928097959822893086"]
+        },
+        "database": {
+            "UPDATE_INTERVAL": 30
+        },
+        "react": {
+            "FILE": "./data/reactdb.json",
+            "MAX_TIME": 5000,
+            "MS_PER_XP": 100,
+            "BUTTON_COUNT": 3,
+            "MIN_DELAY": 2000,
+            "MAX_DELAY": 5000,
+            "COOLDOWN_TIME": 900000
+        },
+        "api": {
+            "cat": {
+                "url": "https://api.thecatapi.com/v1/images/search",
+                "key": "6f0dafb4-7357-489c-9e7c-09fa30e625de"
+            },
+            "dog": {
+                "url": "https://dog.ceo/api/breeds/image/random"
+            },
+            "corgi": {
+                "url": "https://dog.ceo/api/breed/corgi/cardigan/images/random"
+            }
+        }
+    }
+}

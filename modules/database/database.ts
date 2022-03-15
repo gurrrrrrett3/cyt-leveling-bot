@@ -1,9 +1,9 @@
 import mariadb from "mariadb";
 import fs from "fs";
-import { DatabaseUser, LocalDatabase, LocalDatabaseUser } from "./types";
-import Util from "./util";
-import config from "../config.json";
-import auth from "../auth.json";
+import { DatabaseUser, LocalDatabase, LocalDatabaseUser } from "../types";
+import Util from "../util";
+import auth from "../../auth.json";
+import config from "../../config.json";
 import User from "./user";
 
 const localDataFile = "./data/localdb.json";
@@ -303,7 +303,7 @@ export default class Database {
   }
 
   private setUpdateTime() {
-    this.nextUpdate = Date.now() + Util.minutesToMilliseconds(config.settings.database.UPDATE_INTERVAL);
+    this.nextUpdate = Date.now() + Util.minutesToMilliseconds(config.settings.database.UPDATE_INTERVAL * 60);
     this.lastUpdate = Date.now();
   }
 }

@@ -1,0 +1,33 @@
+{
+    "name": "cyt-leveling-bot",
+    "version": "1.2.1",
+    "description": "",
+    "main": "./dist/index.js",
+    "scripts": {
+        "start": "npm run pull && npm run build && echo \"Running\" && node dist/index.js",
+        "pull": "git pull",
+        "build": "npm run depends && echo \"Compiling\" && tsc",
+        "depends": "echo \"Installing dependencies\" && npm i",
+        "watch": "tsc --watch",
+        "test": "node dist/index.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/gurrrrrrett3/cyt-leveling-bot.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/gurrrrrrett3/cyt-leveling-bot/issues"
+    },
+    "homepage": "https://github.com/gurrrrrrett3/cyt-leveling-bot#readme",
+    "dependencies": {
+        "@discordjs/rest": "^0.3.0",
+        "discord.js": "^13.3.1",
+        "mariadb": "^2.5.5",
+        "node-canvas": "^2.7.0",
+        "node-fetch": "^2.6.6",
+        "typescript": "^4.5.4"
+    }
+}
